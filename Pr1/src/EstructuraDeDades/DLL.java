@@ -2,7 +2,7 @@ package EstructuraDeDades;
 
 import Exceptions.*;
 
-public interface DLL<T> {
+public interface DLL<T extends Comparable<T>> {
 
     void create();
 

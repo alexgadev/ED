@@ -42,7 +42,7 @@ public class DoublyLinkedList<T extends Comparable<T>> implements DLL<T>, Iterab
      *
      * @param pos enter on es es vol inserir l'element
      * @param data T que es vol inserir a la llista
-     * @throws SizeException
+     * @throws SizeException excepció en cas que no es pugui fer l'operació
      */
     public void insert(int pos, T data) throws SizeException{
         Node<T> node = first;
@@ -80,7 +80,7 @@ public class DoublyLinkedList<T extends Comparable<T>> implements DLL<T>, Iterab
     public T get(int pos) throws NotFound {
         Node<T> node = first;
         int count = 0;
-        while(count < pos){
+        while((count < pos) && (node != null)){
             count++;
             node = node.next;
         }
@@ -153,11 +153,11 @@ public class DoublyLinkedList<T extends Comparable<T>> implements DLL<T>, Iterab
         }
 
         if(node == null)
-            throw new SearchNotFound(cost);
+            throw new SearchNotFound(cost - 1);
 
         if (val.compareTo(data) == 0){
             return cost;
-        } else throw new SearchNotFound(cost);
+        } else throw new SearchNotFound(cost - 1);
     }
 
     @Override

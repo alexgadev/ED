@@ -1,14 +1,13 @@
 package EstructuraDeDades.Part2;
 
 import EstructuraDeDades.Part1.DoublyLinkedList;
-import Exceptions.NotFound;
-import Exceptions.SearchNotFound;
+import Exceptions.*;
 
 public interface HashTableContract<K extends Comparable<K>, T extends Comparable<T>> {
 
-    void create();
+    void create(int dim);
 
-    void insert(K key, T data);
+    void insert(K key, T data) throws SizeException;
 
     T get(K key) throws NotFound;
 

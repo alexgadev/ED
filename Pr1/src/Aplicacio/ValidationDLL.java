@@ -7,7 +7,6 @@ import Exceptions.*;
 public class ValidationDLL {
     public static void main(String[] args){
         DoublyLinkedList<Ciutada> ciutadans = new DoublyLinkedList<>();
-        ciutadans.create();
 
         Ciutada c1 = new Ciutada("Ruby", "Lawrence", "19632780A");
         Ciutada c2 = new Ciutada("Elena", "Lawrence", "35970581F"); // same lastname as c1

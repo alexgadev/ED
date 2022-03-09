@@ -8,6 +8,13 @@ public class DoublyLinkedList<T extends Comparable<T>> implements DLL<T>, Iterab
     private Node<T> first, last;
 
     /**
+     * Constructor de classe
+     */
+    public DoublyLinkedList(){
+        create();
+    }
+
+    /**
      * Crear: constructor per inicialitzar la llista
      *
      */

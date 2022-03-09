@@ -8,7 +8,7 @@ public interface DLL<T> {
 
     void insert(T data);
 
-    void insert(int pos, T data);
+    void insert(int pos, T data) throws SizeException;
 
     T get(int pos) throws NotFound;
 

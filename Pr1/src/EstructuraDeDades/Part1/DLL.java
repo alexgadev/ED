@@ -1,4 +1,4 @@
-package EstructuraDeDades;
+package EstructuraDeDades.Part1;
 
 import Exceptions.*;
 

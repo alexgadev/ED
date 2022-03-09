@@ -1,6 +1,7 @@
 package Aplicacio;
 
 import EstructuraDeDades.*;
+import EstructuraDeDades.Part1.DoublyLinkedList;
 import Exceptions.*;
 
 public class ValidationDLL {

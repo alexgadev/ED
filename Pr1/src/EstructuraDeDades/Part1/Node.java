@@ -1,4 +1,4 @@
-package EstructuraDeDades;
+package EstructuraDeDades.Part1;
 
 public class Node<T extends Comparable<T>> {
     Node<T> next, prev;

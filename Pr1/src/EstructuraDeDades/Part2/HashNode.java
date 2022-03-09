@@ -1,4 +1,4 @@
-package EstructuraDeDades;
+package EstructuraDeDades.Part2;
 
 public class HashNode<K, T extends Comparable<T>> {
     K key;
@@ -8,5 +8,10 @@ public class HashNode<K, T extends Comparable<T>> {
     public HashNode(K key, T value){
         this.key = key;
         this.value = value;
+    }
+
+    @Override
+    public String toString(){
+        return "Key [" + key + "]\tValue [" + value + "]";
     }
 }

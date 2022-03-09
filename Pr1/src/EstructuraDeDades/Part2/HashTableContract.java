@@ -1,6 +1,8 @@
-package EstructuraDeDades;
+package EstructuraDeDades.Part2;
 
-import java.util.List;
+import EstructuraDeDades.Part1.DoublyLinkedList;
+import Exceptions.NotFound;
+import Exceptions.SearchNotFound;
 
 public interface HashTableContract<K extends Comparable<K>, T extends Comparable<T>> {
 
@@ -8,13 +10,13 @@ public interface HashTableContract<K extends Comparable<K>, T extends Comparable
 
     void insert(K key, T data);
 
-    T get(K key);
+    T get(K key) throws NotFound;
 
-    int search(K key);
+    int search(K key) throws SearchNotFound;
 
     int size();
 
-    void remove(K key);
+    void remove(K key) throws NotFound;
 
     DoublyLinkedList<T> getValues();
 

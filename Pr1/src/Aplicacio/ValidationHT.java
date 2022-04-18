@@ -9,7 +9,7 @@ import Exceptions.SizeException;
 
 public class ValidationHT {
     public static void main(String[] args){
-        HashTable<String, Ciutada> ciutadans = new HashTable<>(100);
+        HashTable<String, Ciutada> ciutadans = new HashTable<>(5);
 
         Ciutada c1 = new Ciutada("Kratos", "Lawrence", "19632780A");
         Ciutada c2 = new Ciutada("Elena", "Lawrence", "35970581F");
@@ -29,9 +29,11 @@ public class ValidationHT {
         catch(SizeException e){
             System.out.println(e.getMessage());
         }
-        System.out.println("List initially...");
+        System.out.println("\nList initially...");
 
         ciutadans.showTable();
+
+        System.out.println("\n-----------------------------------------\n");
 
         System.out.println("Getting key = 29309153T");
         try {
@@ -41,7 +43,11 @@ public class ValidationHT {
             e.printStackTrace();
         }
 
+        System.out.println("\n-----------------------------------------\n");
+
         System.out.println("List size: " + ciutadans.size()); // size = 6
+
+        System.out.println("\n-----------------------------------------\n");
 
         System.out.println("Trying to remove Ruby...");
         try{
@@ -53,9 +59,15 @@ public class ValidationHT {
 
         ciutadans.showTable();
 
+        System.out.println("\n-----------------------------------------\n");
+
         System.out.println("List size: " + ciutadans.size()); // size = 5
 
+        System.out.println("\n-----------------------------------------\n");
+
         System.out.println("Load Factor: " + ciutadans.getLoadFactor()); // 5 / 100 = 0.05
+
+        System.out.println("\n-----------------------------------------\n");
 
         try {
             System.out.println("Cost of searching for Luna's DNI: " + ciutadans.search("29309153T")); // 2 at most
@@ -64,11 +76,17 @@ public class ValidationHT {
             System.out.println(e.getMessage());
         }
 
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("All values: ");
         DoublyLinkedList<Ciutada> l1 = ciutadans.getValues();
         for (Ciutada c:l1){
             System.out.println(c);
         }
 
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("All keys: ");
         DoublyLinkedList<String> l2 = ciutadans.getKeys();
         for (String str:l2){
             System.out.println(str);

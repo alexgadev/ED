@@ -5,10 +5,7 @@ import EstructuraDeDades.Part2.HashTable;
 import Exceptions.*;
 import com.opencsv.CSVWriter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Random;
 
 public class SearchCost {
@@ -107,7 +104,7 @@ public class SearchCost {
                 writerdll.writeNext(data1);
 
                 String[] data2 = {String.valueOf(i), String.valueOf(htmean), String.valueOf(htstdev)};
-                writerdll.writeNext(data2);
+                writerht.writeNext(data2);
             }
             writerdll.close();
             writerht.close();

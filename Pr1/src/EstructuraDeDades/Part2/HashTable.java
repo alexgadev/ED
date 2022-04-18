@@ -33,7 +33,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * @param key K per obtenir un índex de la taula de hashing
      * @return índex de la taula de hashing
      */
-    public int hashFunc(K key){
+    private int hashFunc(int size, K key){
         long sum = 0;
         long mul = 1;
 
@@ -43,7 +43,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
             mul = (i % 4 == 0) ? 1 : mul * 256;
             sum += keyAsString.charAt(i) * mul;
         }
-        return (int) (Math.abs(sum) % hashTable.length);
+        return (int) (Math.abs(sum) % size);
     }
 
     /**
@@ -55,30 +55,17 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * @throws SizeException excepció en cas que no es pugui inserir
      */
     public void insert(K key, T data) throws SizeException {
-        int index = hashFunc(key);  // using hash function to get an index to the hash table
+        float lf = getLoadFactor();
+
+        if (lf > MAX_LOAD) {
+            /*throw new SizeException();*/
+            resize();
+        }
+
+        int index = hashFunc(hashTable.length, key);  // using hash function to get an index to the hash table
         HashNode<K, T> node = new HashNode<>(key, data);
 
-        if(getLoadFactor() <= MAX_LOAD) {
-            if (hashTable[index] == null) { // not a collision
-                hashTable[index] = node;
-            } else {
-                HashNode<K, T> temp = hashTable[index];
-
-                // comparing temp.next to null instead of temp with null to get
-                // the last node so that we can assign its ".next" to the new node if needed
-                while ((temp.next != null) && (temp.key.compareTo(key) != 0)) {
-                    temp = temp.next;
-                }
-                // in case the key already exists, just update its value
-                if (temp.key.compareTo(key) == 0) {
-                    temp.value = data;
-                } else {
-                    temp.next = node;
-                    node.next = null;
-                }
-            }
-        }
-        else throw new SizeException();
+        insertion(hashTable, index, node);
     }
 
     /**
@@ -89,7 +76,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * @throws NotFound excepció en cas que no es pugui obtenir
      */
     public T get(K key) throws NotFound{
-        int index = hashFunc(key);
+        int index = hashFunc(hashTable.length, key);
 
         HashNode<K, T> node = hashTable[index];
 
@@ -117,7 +104,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * informació del nombre d'elements que s'han accedit per comprovar si l'element existeix o no
      */
     public int search(K key) throws SearchNotFound {
-        int index = hashFunc(key);
+        int index = hashFunc(hashTable.length, key);
         HashNode<K, T> node = hashTable[index];
 
         int cost = 1; // just by visiting first node we'll count as one access
@@ -164,7 +151,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * @throws NotFound excepció en cas que l'element no s'hagi trobat
      */
     public void remove(K key) throws NotFound {
-        int index = hashFunc(key);
+        int index = hashFunc(hashTable.length, key);
 
         HashNode<K, T> node = hashTable[index];
 
@@ -192,7 +179,6 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      */
     public DoublyLinkedList<T> getValues() {
         DoublyLinkedList<T> values = new DoublyLinkedList<>();
-        values.create();
 
         for (HashNode<K, T> ktHashNode : hashTable) {
             HashNode<K, T> node = ktHashNode;
@@ -212,7 +198,6 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      */
     public DoublyLinkedList<K> getKeys() {
         DoublyLinkedList<K> keys = new DoublyLinkedList<>();
-        keys.create();
 
         for (HashNode<K, T> ktHashNode : hashTable) {
             HashNode<K, T> node = ktHashNode;
@@ -232,6 +217,47 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      */
     public float getLoadFactor() {
         return ((float) size()) / hashTable.length;
+    }
+
+
+    private void insertion(HashNode<K, T>[] table, int index, HashNode<K, T> node){
+        if (table[index] == null) { // not a collision
+            table[index] = node;
+        } else {
+            HashNode<K, T> temp = table[index];
+
+            // comparing temp.next to null instead of temp with null to get
+            // the last node so that we can assign its ".next" to the new node if needed
+            while ((temp.next != null) && (temp.key.compareTo(node.key) != 0)) {
+                temp = temp.next;
+            }
+            // in case the key already exists, just update its value
+            if (temp.key.compareTo(node.key) == 0) {
+                temp.value = node.value;
+            } else {
+                temp.next = node;
+                node.next = null;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize(){
+        HashNode<K, T>[] resized = new HashNode[hashTable.length * 2];
+        Arrays.fill(resized, null);
+
+        for (HashNode<K, T> node : hashTable) {
+            while (node != null) {
+                HashNode<K, T> temp = new HashNode<>(node.key, node.value);
+                int index = hashFunc(resized.length, temp.key);
+
+                insertion(resized, index, temp);
+
+                node = node.next;
+            }
+        }
+
+        hashTable = resized;
     }
 
     public void showTable(){

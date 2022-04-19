@@ -39,6 +39,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
 
         String keyAsString = key.toString();
 
+        // fold a string, summing 4 bytes at a time
         for(int i = 0; i < keyAsString.length(); i++){
             mul = (i % 4 == 0) ? 1 : mul * 256;
             sum += keyAsString.charAt(i) * mul;
@@ -62,7 +63,9 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
             resize();
         }
 
-        int index = hashFunc(hashTable.length, key);  // using hash function to get an index to the hash table
+        // call to these functions after possible resizing so that the
+        // hashtable length and index calculations are correct
+        int index = hashFunc(hashTable.length, key);
         HashNode<K, T> node = new HashNode<>(key, data);
 
         insertion(hashTable, index, node);
@@ -110,7 +113,8 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
         int cost = 1; // just by visiting first node we'll count as one access
 
         while(node != null) {
-            if (node.key.compareTo(key) != 0) { // add until to the total cost if it's not the key we are searching for
+            // add until to the total cost if it's not the key we are searching for
+            if (node.key.compareTo(key) != 0) {
                 cost++;
             }
             else {
@@ -130,6 +134,7 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
     public int size() {
         int size = 0;
         // each existing node different from null will count as an element in the hash table
+        // so traversing the table and each linked list will be necessary
         for (HashNode<K, T> ktHashNode : hashTable) {
             if (ktHashNode != null) {
                 size++;
@@ -151,22 +156,28 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
      * @throws NotFound excepció en cas que l'element no s'hagi trobat
      */
     public void remove(K key) throws NotFound {
-        int index = hashFunc(hashTable.length, key);
+        int index = hashFunc(hashTable.length, key); // get index to remove
 
         HashNode<K, T> node = hashTable[index];
 
-        if (node == null)
+        if (node == null) // if position at index is null, there's no node to remove
             throw new NotFound();
 
+        // if node at position index happens to have the key searched for
+        // if it was the only collision, it will be equal to null
+        // if it wasn't, it will be equal to the next node reference
         if (node.key.compareTo(key) == 0)
             hashTable[index] = node.next;
         else
+            // traverse list in position until last element of list or the key is found
             while((node.next != null) && (node.next.key.compareTo(key) != 0)){
                 node = node.next;
             }
+            // if reached here it can only be either end of list or key found
+            // so throw exception if end of list reached
             if(node.next == null)
                 throw new NotFound();
-
+            // reassign "next" reference to the to be removed node's next
             if(node.next.key.compareTo(key) == 0) {
                 node.next = node.next.next;
             }
@@ -180,6 +191,8 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
     public DoublyLinkedList<T> getValues() {
         DoublyLinkedList<T> values = new DoublyLinkedList<>();
 
+        // for every position in the hash table, get its initial node
+        // and add it to the list if it's not null
         for (HashNode<K, T> ktHashNode : hashTable) {
             HashNode<K, T> node = ktHashNode;
 
@@ -199,6 +212,8 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
     public DoublyLinkedList<K> getKeys() {
         DoublyLinkedList<K> keys = new DoublyLinkedList<>();
 
+        // for every position in the hash table, get its initial node
+        // and add it to the list if it's not null
         for (HashNode<K, T> ktHashNode : hashTable) {
             HashNode<K, T> node = ktHashNode;
 
@@ -243,11 +258,13 @@ public class HashTable<K extends Comparable<K>, T extends Comparable<T>> impleme
 
     @SuppressWarnings("unchecked")
     private void resize(){
-        HashNode<K, T>[] resized = new HashNode[hashTable.length * 2];
+        HashNode<K, T>[] resized = new HashNode[hashTable.length * 2]; // double the original size
         Arrays.fill(resized, null);
 
         for (HashNode<K, T> node : hashTable) {
             while (node != null) {
+                // for every node existing in the original table get a new index
+                // relative to the resized table and insert it
                 HashNode<K, T> temp = new HashNode<>(node.key, node.value);
                 int index = hashFunc(resized.length, temp.key);
 

@@ -35,6 +35,28 @@ public class ValidationHT {
 
         System.out.println("\n-----------------------------------------\n");
 
+        System.out.println("Size: " + ciutadans.size()); // size = 6
+
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("Trying to add a citizen with a same dni...");
+
+        Ciutada c7 = new Ciutada("John", "Cena", "19632780A");
+        try{
+            ciutadans.insert(c7.getDNI(), c7);
+        }
+        catch (SizeException s){
+            System.out.println(s.getMessage());
+        }
+
+        ciutadans.showTable();
+
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("Size: " + ciutadans.size()); // size = 6
+
+        System.out.println("\n-----------------------------------------\n");
+
         System.out.println("Getting key = 29309153T");
         try {
             System.out.println(ciutadans.get("29309153T")); // Should print citizen Luna
@@ -42,10 +64,6 @@ public class ValidationHT {
         catch (NotFound e){
             e.printStackTrace();
         }
-
-        System.out.println("\n-----------------------------------------\n");
-
-        System.out.println("List size: " + ciutadans.size()); // size = 6
 
         System.out.println("\n-----------------------------------------\n");
 
@@ -71,6 +89,16 @@ public class ValidationHT {
 
         try {
             System.out.println("Cost of searching for Luna's DNI: " + ciutadans.search("29309153T")); // 2 at most
+        }
+        catch (SearchNotFound e){
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("Cost of searching for unknown DNI: ");
+        try {
+            System.out.print(ciutadans.search("12345678A")); // Error message
         }
         catch (SearchNotFound e){
             System.out.println(e.getMessage());

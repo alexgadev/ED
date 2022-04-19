@@ -11,6 +11,7 @@ import java.util.Random;
 public class SearchCost {
     public static void main(String[] args){
         final int MAX_SIZE = 50000;
+
         DoublyLinkedList<Integer> dll;
         HashTable<Integer, Integer> ht;
 

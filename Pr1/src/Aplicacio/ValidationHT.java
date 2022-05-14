@@ -62,7 +62,17 @@ public class ValidationHT {
             System.out.println(ciutadans.get("29309153T")); // Should print citizen Luna
         }
         catch (NotFound e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("\n-----------------------------------------\n");
+
+        System.out.println("Getting unknown key = 12345678T");
+        try {
+            System.out.println(ciutadans.get("12345678T")); // Should give an error
+        }
+        catch (NotFound e){
+            System.out.println(e.getMessage());
         }
 
         System.out.println("\n-----------------------------------------\n");

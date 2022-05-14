@@ -5,7 +5,7 @@ import Exceptions.*;
 
 import java.util.Arrays;
 
-public class HashTable<K extends Comparable<K>, T extends Comparable<T>> implements HashTableContract<K, T>{
+public class HashTable<K extends Comparable<K>, T extends Comparable<T>> implements HashTableInterface<K, T> {
     private HashNode<K, T>[] hashTable;
     private static final float MAX_LOAD = 0.75F;
 

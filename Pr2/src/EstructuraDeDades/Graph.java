@@ -1,11 +1,11 @@
 package EstructuraDeDades;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class Graph<V> implements GraphInterface<V>{
-    HashMap<String, V> vertices;
+    HashMap<String, List<V>> vertices;
     AdjVertex[] edges;
 
     public void createGraph() {

@@ -1,10 +1,10 @@
 package Aplicacio;
 
 import EstructuraDeDades.Graph;
-import EstructuraDeDades.PuntRecarrega;
+import EstructuraDeDades.Estacio;
 
 public class Main {
-    Graph<PuntRecarrega> graph = new Graph<>();
+    Graph<Estacio, Double> graph = new Graph<>();
 
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Graph<V, E> implements GraphInterface<V, E>{
     HashMap<Integer, V> vertices; // will be using V's hashCode as key for each entry
-    Edge<E>[] edges;
+    AdjVertex<E>[] edges;
     int numEdges;
 
     public Graph(){
@@ -16,7 +16,7 @@ public class Graph<V, E> implements GraphInterface<V, E>{
     public void createGraph() {
         vertices = new HashMap<>();
         numEdges = 0;
-        edges = new Edge[numEdges];
+        edges = new AdjVertex[numEdges];
     }
 
 
@@ -73,7 +73,7 @@ public class Graph<V, E> implements GraphInterface<V, E>{
     public List<V> adjacent(V v) {
         // is v in the graph?
             // if not throw exception
-        // iterate through "edges" and finding a "next" relation to v
+        // iterate through "edges" until finding a "next" relation to v
         return null;
     }
 
@@ -121,12 +121,12 @@ public class Graph<V, E> implements GraphInterface<V, E>{
 
     @SuppressWarnings("unchecked")
     private void expandTable(){
-        Edge<E>[] resized = new Edge[edges.length * 2];
+        AdjVertex<E>[] resized = new AdjVertex[edges.length * 2];
         System.arraycopy(edges, 0, resized, 0, edges.length);
         edges = resized;
     }
 
-    private boolean isFull(Edge<E>[] table, int elems){
+    private boolean isFull(AdjVertex<E>[] table, int elems){
         return table.length == elems;
     }
 }

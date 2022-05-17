@@ -1,11 +1,11 @@
 package EstructuraDeDades;
 
-public class Edge<E> {
+public class AdjVertex<E> {
     private String name;
-    public Edge<E> next_row, next_col;
+    public AdjVertex<E> next_row, next_col;
     private E tag_row, tag_col;
 
-    public Edge(String name, E tag_row, E tag_col) {
+    public AdjVertex(String name, E tag_row, E tag_col) {
         this.name = name;
         this.tag_row = tag_row;
         this.tag_col = tag_col;

@@ -1,37 +1,38 @@
 package EstructuraDeDades;
 
 public class AdjVertex<E> {
-    private String name;
+    private int code_row, code_col;
     public AdjVertex<E> next_row, next_col;
-    private E tag_row, tag_col;
+    private E tag;
 
-    public AdjVertex(String name, E tag_row, E tag_col) {
-        this.name = name;
-        this.tag_row = tag_row;
-        this.tag_col = tag_col;
+    public AdjVertex(int code_row, int code_col) {
+        this.code_row = code_row;
+        this.code_col = code_col;
+        this.next_row = null;
+        this.next_col = null;
     }
 
-    public String getName() {
-        return name;
+    public int getCode_row() {
+        return code_row;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCode_row(int code_row) {
+        this.code_row = code_row;
     }
 
-    public E getTag_row() {
-        return tag_row;
+    public int getCode_col() {
+        return code_col;
     }
 
-    public void setTag_row(E tag_row) {
-        this.tag_row = tag_row;
+    public void setCode_col(int code_col) {
+        this.code_col = code_col;
     }
 
-    public E getTag_col() {
-        return tag_col;
+    public E getTag() {
+        return tag;
     }
 
-    public void setTag_col(E tag_col) {
-        this.tag_col = tag_col;
+    public void setTag(E tag) {
+        this.tag = tag;
     }
 }

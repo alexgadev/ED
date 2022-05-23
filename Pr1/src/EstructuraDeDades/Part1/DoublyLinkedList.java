@@ -171,4 +171,15 @@ public class DoublyLinkedList<T extends Comparable<T>> implements DLL<T>, Iterab
     public Iterator<T> iterator(){
         return new TIterator<>(this);
     }
+
+    public String toString(){
+        Node<T> node = first;
+        String result = "";
+        while (node.next != null){
+            result += node.data.toString() + ", ";
+            node = node.next;
+        }
+
+        return result + node.data.toString();
+    }
 }

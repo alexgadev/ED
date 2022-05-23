@@ -1,10 +1,11 @@
 package EstructuraDeDades;
 
 public class Endoll implements Comparable<Endoll>{
-    private int id, consum, temps;
+    private int id, temps;
+    private double consum;
     private String estat, tipus;
 
-    public Endoll(int id, int consum, int temps, String estat, String tipus) {
+    public Endoll(int id, double consum, int temps, String estat, String tipus) {
         this.id = id;
         this.consum = consum;
         this.temps = temps;
@@ -16,7 +17,7 @@ public class Endoll implements Comparable<Endoll>{
         return id;
     }
 
-    public int getConsum() {
+    public double getConsum() {
         return consum;
     }
 
@@ -36,7 +37,7 @@ public class Endoll implements Comparable<Endoll>{
         this.id = id;
     }
 
-    public void setConsum(int consum) {
+    public void setConsum(double consum) {
         this.consum = consum;
     }
 
@@ -55,5 +56,16 @@ public class Endoll implements Comparable<Endoll>{
     @Override
     public int compareTo(Endoll o) {
         return getId() == o.getId() ? 0 : -1;
+    }
+
+    @Override
+    public String toString() {
+        return "Endoll{" +
+                "id=" + id +
+                ", temps=" + temps +
+                ", consum=" + consum +
+                ", estat='" + estat + '\'' +
+                ", tipus='" + tipus + '\'' +
+                '}';
     }
 }

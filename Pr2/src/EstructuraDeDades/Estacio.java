@@ -3,18 +3,19 @@ package EstructuraDeDades;
 import EstructuraDeDades.Part1.DoublyLinkedList;
 
 public class Estacio {
-    private int id_estacio, potencia;
-    private String nom, data, ciutat;
-    private float latitud, longitud;
+    private int id_estacio;
+    private String nom, data, ciutat, carrer;
+    private double potencia,  latitud, longitud;
     private DoublyLinkedList<Endoll> endolls;
 
-    public Estacio(int id_estacio, int potencia, String nom, String data, String ciutat,
-                   float latitud, float longitud, DoublyLinkedList<Endoll> endolls) {
+    public Estacio(int id_estacio, double potencia, String nom, String data, String carrer,
+                   String ciutat, double latitud, double longitud, DoublyLinkedList<Endoll> endolls) {
         this.id_estacio = id_estacio;
         this.potencia = potencia;
         this.nom = nom;
         this.data = data;
         this.ciutat = ciutat;
+        this.carrer = carrer;
         this.latitud = latitud;
         this.longitud = longitud;
         this.endolls = endolls;
@@ -24,7 +25,7 @@ public class Estacio {
         return id_estacio;
     }
 
-    public int getPotencia() {
+    public double getPotencia() {
         return potencia;
     }
 
@@ -36,15 +37,19 @@ public class Estacio {
         return data;
     }
 
+    public String getCarrer() {
+        return carrer;
+    }
+
     public String getCiutat() {
         return ciutat;
     }
 
-    public float getLatitud() {
+    public double getLatitud() {
         return latitud;
     }
 
-    public float getLongitud() {
+    public double getLongitud() {
         return longitud;
     }
 
@@ -52,7 +57,7 @@ public class Estacio {
         this.id_estacio = id_estacio;
     }
 
-    public void setPotencia(int potencia) {
+    public void setPotencia(double potencia) {
         this.potencia = potencia;
     }
 
@@ -64,15 +69,19 @@ public class Estacio {
         this.data = data;
     }
 
+    public void setCarrer(String carrer) {
+        this.carrer = carrer;
+    }
+
     public void setCiutat(String ciutat) {
         this.ciutat = ciutat;
     }
 
-    public void setLatitud(float latitud) {
+    public void setLatitud(double latitud) {
         this.latitud = latitud;
     }
 
-    public void setLongitud(float longitud) {
+    public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
 
@@ -82,5 +91,20 @@ public class Estacio {
 
     public DoublyLinkedList<Endoll> getEndolls() {
         return endolls;
+    }
+
+    @Override
+    public String toString() {
+        return "Estacio{" +
+                "id_estacio=" + id_estacio +
+                ", nom='" + nom + '\'' +
+                ", data='" + data + '\'' +
+                ", ciutat='" + ciutat + '\'' +
+                ", carrer='" + carrer + '\'' +
+                ", potencia=" + potencia +
+                ", latitud=" + latitud +
+                ", longitud=" + longitud +
+                ", endolls=" + endolls +
+                '}';
     }
 }

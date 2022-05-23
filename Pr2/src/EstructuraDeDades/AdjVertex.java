@@ -1,9 +1,9 @@
 package EstructuraDeDades;
 
 public class AdjVertex<E> {
-    private int code_row, code_col;
+    private int code_row, code_col; // reference to the vertices
     public AdjVertex<E> next_row, next_col;
-    private E tag;
+    private E tag;  // weight of edge
 
     public AdjVertex(int code_row, int code_col) {
         this.code_row = code_row;

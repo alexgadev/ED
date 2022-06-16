@@ -17,6 +17,22 @@ public class ICAENGraph {
             estacions = readFile(jsonName);
             graf = new Graph<>(estacions);
             addEdges();
+
+            /*estacions.forEach( x -> {
+                try {
+                    System.out.println(x.getNom() + " adjacents: ");
+                    List<Estacio> adj = graf.adjacent(x);
+                    adj.forEach( a -> {
+                        try {
+                            System.out.println(a.getNom() + " dist: " + graf.edgeValue(x, a));
+                        } catch (NonExistentEdge e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (NotFound e) {
+                    e.printStackTrace();
+                }
+            });*/
         }
         catch (IOException e){
             e.printStackTrace();
@@ -70,7 +86,7 @@ public class ICAENGraph {
     public List<String> optimalPath(String start, String target, int range){
         // The set of discovered nodes that may need to be (re-)expanded.
         // Initially, only the start node is known.
-        List<String> openSet = new ArrayList<>(); /* Use DLL */
+        List<String> openSet = new ArrayList<>();
         openSet.add(start);
 
         Estacio init = getEstacioByString(start);
@@ -81,7 +97,7 @@ public class ICAENGraph {
 
         // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
         // to n currently known
-        HashMap<String, List<String>> cameFrom = new HashMap<>();
+        HashMap<String, String> cameFrom = new HashMap<>();
 
         HashMap<String, Double> gScore = new HashMap<>();
         HashMap<String, Double> fScore = new HashMap<>();
@@ -114,8 +130,7 @@ public class ICAENGraph {
 
                     if (tentative_gScore < gScore.get(neighbor.getNom())) {
                         // This path to neighbor is better than any previous one
-                        cameFrom.put(neighbor.getNom(), new ArrayList<>());
-                        cameFrom.get(neighbor.getNom()).add(current.getNom());
+                        cameFrom.put(neighbor.getNom(), current.getNom());
                         gScore.put(neighbor.getNom(), tentative_gScore);
                         fScore.put(neighbor.getNom(), tentative_gScore + distance(neighbor.getLatitud(), neighbor.getLongitud(),
                                 end.getLatitud(), end.getLongitud()));
@@ -259,10 +274,11 @@ public class ICAENGraph {
     }
 
     private void addEdges(){
+        // adding all edges between stations withing 40 km range
         for (Estacio est : estacions){
             for (Estacio stat : estacions){
                 double dist = distance(est.getLatitud(), est.getLongitud(), stat.getLatitud(), stat.getLongitud());
-                if (dist < 40.0){
+                if ((dist < 40.0) && !est.equals(stat)){
                     try {
                         graf.addEdge(est, stat, dist);
                     }
@@ -273,14 +289,15 @@ public class ICAENGraph {
             }
         }
 
+        // adding an edge to all stations which don't have any connections
         for (Estacio est : estacions){
             try {
-                if (graf.adjacent(est) == null) {
+                if (graf.adjacent(est).isEmpty()) {
                     Estacio minDistEst = estacions.get(0);
                     double minDist = distance(minDistEst.getLatitud(), minDistEst.getLongitud(), est.getLatitud(), est.getLongitud());
                     for (Estacio stat : estacions){
                         double dist2 = distance(stat.getLatitud(), stat.getLongitud(), est.getLatitud(), est.getLongitud());
-                        if((dist2 < minDist)){
+                        if((dist2 < minDist) && !est.equals(stat)){
                             minDist = dist2;
                             minDistEst = stat;
                         }
@@ -289,11 +306,9 @@ public class ICAENGraph {
                 }
             }
             catch (NotFound | CannotAddElement e){
-                e.printStackTrace();
+
             }
         }
-
-        
     }
 
     private Estacio lowestScore(List<String> list, HashMap<String, Double> map){
@@ -308,8 +323,8 @@ public class ICAENGraph {
         return res;
     }
 
-    private List<String> reconstruct_path(HashMap<String, List<String>> cameFrom, String current){
-        List<String> total_path = new ArrayList<>(cameFrom.get(current));
+    private List<String> reconstruct_path(HashMap<String, String> cameFrom, String current){
+        List<String> total_path = new ArrayList<>(cameFrom.keySet());
         total_path.add(current);
         return total_path;
     }

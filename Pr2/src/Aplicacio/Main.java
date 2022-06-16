@@ -4,7 +4,6 @@ import EstructuraDeDades.Graph;
 import EstructuraDeDades.ICAENGraph;
 import Exceptions.CannotAddElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -39,7 +38,7 @@ public class Main {
             graph.printGraph();*/
 
             ICAENGraph graph = new ICAENGraph("icaen.json");
-            List<String> list = graph.optimalPath("Tortosa - INGETEAM EdRR 1", "Mataró - DBT EdRR 1", 12);
+            List<String> list = graph.optimalPath("Gandesa - LAFON EdRR 1", "Rubí Forma Apar. Ppal 1 - DBT EdRR 1", 12);
 
             System.out.println(list.size());
             System.out.println(list);

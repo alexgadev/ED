@@ -85,9 +85,7 @@ public class Graph<V, E> implements GraphInterface<V, E>{
     public boolean edgeExists(V v1, V v2) {
         try {
             return edgeValue(v1, v2) != null;
-        } catch (NonExistentEdge e) {
-
-        }
+        } catch (NonExistentEdge ignored) {}
         return false;
     }
 
@@ -157,6 +155,11 @@ public class Graph<V, E> implements GraphInterface<V, E>{
         return result;
     }
 
+    /*------------------------------------------------------------------------------*/
+    /*                                                                              */
+    /*                              Auxiliary methods                               */
+    /*                                                                              */
+    /*------------------------------------------------------------------------------*/
     private boolean isFull(AdjVertex<E>[] table, int elems){
         return table.length == elems;
     }

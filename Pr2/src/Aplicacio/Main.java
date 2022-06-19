@@ -7,6 +7,7 @@ import Exceptions.UnreachablePath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
         public static void main(String[] args){
@@ -35,9 +36,7 @@ public class Main {
                 graph.addEdge("D", "E", 3);
             } catch (CannotAddElement e) {
                 e.printStackTrace();
-            }
-
-            graph.printGraph();*/
+            }*/
 
             ICAENGraph graph = new ICAENGraph("icaen.json");
             List<String> list = new ArrayList<>();
@@ -52,6 +51,43 @@ public class Main {
             System.out.println(list);
 
 
-            //graph.graf.printGraph();
+
+            /*
+
+                Inicialització de les variables
+
+
+             */
+
+            System.out.println("Main test...");
+            int opt;
+            do {
+                switch (chooseOption()){
+                    case 0:
+                }
+
+
+            }while(opt != 0);
+    }
+
+    public static int chooseOption(){
+
+        Scanner sc = new Scanner(System.in);
+        String test = sc.nextLine();
+        showOptions();
+
+    }
+
+    public static void showOptions(){
+        System.out.println("Choose an option:");
+        System.out.println("\n--- Graph Functionalities ---");
+        System.out.println("1. Add an edge");
+        System.out.println("2. Check if and edge exists");
+        System.out.println("3. Get the value of an edge");
+        System.out.println("4. Show all adjacent nodes to a node passed by parameter");
+        System.out.println("5. Mostra el graf");
+        System.out.println("\n--- ICAEN Functionalities ---");
+        System.out.println("6. Mostra el camí optim d'una estació a una altra");
+        System.out.println("7. Mostra les zones on la màxima distancia no està garantida");
     }
 }

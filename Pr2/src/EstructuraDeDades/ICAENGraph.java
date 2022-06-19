@@ -17,22 +17,6 @@ public class ICAENGraph {
             estacions = readFile(jsonName);
             graf = new Graph<>(estacions);
             addEdges();
-
-            /*estacions.forEach( x -> {
-                try {
-                    System.out.println(x.getNom() + " adjacents: ");
-                    List<Estacio> adj = graf.adjacent(x);
-                    adj.forEach( a -> {
-                        try {
-                            System.out.println(a.getNom() + " dist: " + graf.edgeValue(x, a));
-                        } catch (NonExistentEdge e) {
-                            e.printStackTrace();
-                        }
-                    });
-                } catch (NotFound e) {
-                    e.printStackTrace();
-                }
-            });*/
         }
         catch (IOException e){
             e.printStackTrace();
@@ -40,62 +24,31 @@ public class ICAENGraph {
     }
 
     /**
-     * Calculating the raw distance from point to point
+     * camiOptim: funció que busca els punst de càrrega pels quals ha de passar
+     *              per arribar al seu destí.
+     *            L'algorisme implementat és l'A*
      *
-     * @param lat1
-     * @param lon1
-     * @param lat2
-     * @param lon2
-     * @return
-     */
-    private double distance(double lat1, double lon1, double lat2, double lon2){
-        // The math module contains a function
-        // named toRadians which converts from
-        // degrees to radians
-        lon1 = Math.toRadians(lon1);
-        lon2 = Math.toRadians(lon2);
-        lat1 = Math.toRadians(lat1);
-        lat2 = Math.toRadians(lat2);
-
-        // Haversine formula
-        double dlon = lon2 - lon1;
-        double dlat = lat2 - lat1;
-        double a = Math.pow(Math.sin(dlat / 2), 2)
-                + Math.cos(lat1) * Math.cos(lat2)
-                * Math.pow(Math.sin(dlon / 2),2);
-
-        double c = 2 * Math.asin(Math.sqrt(a));
-
-        // Radius of earth in kilometers. Use 3956
-        // for miles
-        double r = 6371;
-
-        // calculate the result
-        return(c * r);
-    }
-
-    /**
-     *  A* finds a path from start to goal.
-     *  h is the heuristic function. h(n) estimates the cost to reach goal from node n.
-     *
-     * @param start
-     * @param target
-     * @param range
-     * @return
+     * @param start String que representa el nom de l'estació inicial
+     * @param target String que representa el nom de l'estació destí
+     * @param range int que representa l'autonomia del cotxe
+     * @return una llista que conté tots els noms dels punts de càrrega pels quals
+     *          ha de passar per arribar al seu destí
+     * @throws UnreachablePath en cas que no es pugui crear la llista amb el resultat
      */
     public List<String> optimalPath(String start, String target, int range) throws UnreachablePath {
-        // The set of discovered nodes that may need to be (re-)expanded.
-        // Initially, only the start node is known.
+        // the set of discovered nodes that may need to be (re-)expanded
+        // initially, only the start node is known
         List<String> openSet = new ArrayList<>();
         openSet.add(start);
 
+        // get their Estacio object to use their methods
         Estacio init = getEstacioByString(start);
         Estacio end = getEstacioByString(target);
 
         assert init != null;
         assert end != null;
 
-        // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
+        // for node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
         // to n currently known
         HashMap<String, String> cameFrom = new HashMap<>();
 
@@ -106,7 +59,11 @@ public class ICAENGraph {
             fScore.put(est.getNom(), Double.MAX_VALUE);
         }
 
+        // for node n, gScore[n] is the cost of the cheapest path from start to n currently known
         gScore.put(start, 0.0);
+
+        // for node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
+        // how cheap a path could be from start to finish if it goes through n
         fScore.put(start, distance(init.getLatitud(), init.getLongitud(), end.getLatitud(), end.getLongitud()));
 
         while (!openSet.isEmpty()){
@@ -130,7 +87,7 @@ public class ICAENGraph {
                     double tentative_gScore = gScore.get(current.getNom()) + distance;
 
                     if ((tentative_gScore < gScore.get(neighbor.getNom())) && (range - distance >= 0)) {
-                        // This path to neighbor is better than any previous one
+                        // this path to neighbor is better than any previous one
                         cameFrom.put(neighbor.getNom(), current.getNom());
                         gScore.put(neighbor.getNom(), tentative_gScore);
                         fScore.put(neighbor.getNom(), tentative_gScore + distance(neighbor.getLatitud(), neighbor.getLongitud(),
@@ -145,22 +102,31 @@ public class ICAENGraph {
                 e.printStackTrace();
             }
         }
-        // Open set is empty but goal was never reached
+        // open set is empty but goal was never reached
         throw new UnreachablePath();
     }
 
     /**
+     * zonesDistMaxNoGarantida: funció que retorna aquelles zones de recàrrega que no
+     *                          compleixen la condició d'estar enllaçades amb, almenys,
+     *                          una altra zona de recàrrega a una distància màxima
+     *                          determinada per l'autonomia
      *
-     *
-     * @param id_origen
-     * @param range
-     * @return
+     * @param id_origen String que representa l'estació origen
+     * @param range int que representa l'autonomia del cotxe
+     * @return una llista que conté aquelles zones de recàrrega que no estan enllaçades
+     *          amb una altra zona de recàrrega a una distància màxima
      */
     public List<String> notGuaranteedMaxDistanceZones(String id_origen, int range){
         List<String> notGuaranteed = new ArrayList<>();
+
+        // check for all stations if there is an optimal path, if there isn't
+        // optimalPath will throw an exception, in that case add that station to the list
+        // of not guaranteed maximum distance zones
         for (Estacio est : estacions){
             try{
-                optimalPath(id_origen, est.getNom(), range);
+                if (!est.getNom().equalsIgnoreCase(id_origen))
+                    optimalPath(id_origen, est.getNom(), range);
             }
             catch (UnreachablePath e){
                 notGuaranteed.add(est.getNom());
@@ -169,13 +135,11 @@ public class ICAENGraph {
         return notGuaranteed;
     }
 
-    private Estacio getEstacioByString(String id){
-        for (Estacio est : estacions){
-            if(est.getNom().equals(id))
-                return est;
-        }
-        return null;
-    }
+    /*------------------------------------------------------------------------------*/
+    /*                                                                              */
+    /*                              Auxiliary methods                               */
+    /*                                                                              */
+    /*------------------------------------------------------------------------------*/
 
     private List<Estacio> readFile(String pathname) throws IOException{
         List<Estacio> estacions = new ArrayList<>();
@@ -289,7 +253,6 @@ public class ICAENGraph {
         }
         return result;
     }
-
     private void addEdges(){
         // adding all edges between stations withing 40 km range
         for (Estacio est : estacions){
@@ -324,6 +287,39 @@ public class ICAENGraph {
         }
     }
 
+    private Estacio getEstacioByString(String id){
+        for (Estacio est : estacions){
+            if(est.getNom().equals(id))
+                return est;
+        }
+        return null;
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2){
+        // The math module contains a function
+        // named toRadians which converts from
+        // degrees to radians
+        lon1 = Math.toRadians(lon1);
+        lon2 = Math.toRadians(lon2);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        // Haversine formula
+        double dlon = lon2 - lon1;
+        double dlat = lat2 - lat1;
+        double a = Math.pow(Math.sin(dlat / 2), 2)
+                + Math.cos(lat1) * Math.cos(lat2)
+                * Math.pow(Math.sin(dlon / 2),2);
+
+        double c = 2 * Math.asin(Math.sqrt(a));
+
+        // Radius of earth in kilometers
+        double r = 6371;
+
+        // calculate the result
+        return(c * r);
+    }
+
     private Estacio lowestScore(List<String> list, HashMap<String, Double> map){
         Estacio res = null;
         double min = Double.MAX_VALUE;
@@ -343,6 +339,7 @@ public class ICAENGraph {
         String key = current;
         total_path.add(key);
 
+        // traces back all the keys and values related to current from the map
         while (key != null){
             key = cameFrom.get(key);
             if (key != null) total_path.add(key);
@@ -350,5 +347,23 @@ public class ICAENGraph {
 
         Collections.reverse(total_path);
         return total_path;
+    }
+
+    public void edgeValues(){
+        estacions.forEach( x -> {
+                try {
+                    System.out.println(x.getNom() + " adjacents: ");
+                    List<Estacio> adj = graf.adjacent(x);
+                    adj.forEach( a -> {
+                        try {
+                            System.out.println(a.getNom() + " dist: " + graf.edgeValue(x, a));
+                        } catch (NonExistentEdge e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (NotFound e) {
+                    e.printStackTrace();
+                }
+            });
     }
 }

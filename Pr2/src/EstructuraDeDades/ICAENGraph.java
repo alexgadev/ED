@@ -83,7 +83,7 @@ public class ICAENGraph {
      * @param range
      * @return
      */
-    public List<String> optimalPath(String start, String target, int range){
+    public List<String> optimalPath(String start, String target, int range) throws UnreachablePath {
         // The set of discovered nodes that may need to be (re-)expanded.
         // Initially, only the start node is known.
         List<String> openSet = new ArrayList<>();
@@ -120,15 +120,16 @@ public class ICAENGraph {
             try {
                 for (Estacio neighbor : graf.adjacent(current)) {
                     // tentative_gScore is the distance from start to the neighbor through current
-                    double tentative_gScore = 0.0;
+                    double distance = 0.0;
                     try {
-                        tentative_gScore = gScore.get(current.getNom()) + graf.edgeValue(current, neighbor);
+                        distance = graf.edgeValue(current, neighbor);
                     }
                     catch (NonExistentEdge e){
                         e.printStackTrace();
                     }
+                    double tentative_gScore = gScore.get(current.getNom()) + distance;
 
-                    if (tentative_gScore < gScore.get(neighbor.getNom())) {
+                    if ((tentative_gScore < gScore.get(neighbor.getNom())) && (range - distance >= 0)) {
                         // This path to neighbor is better than any previous one
                         cameFrom.put(neighbor.getNom(), current.getNom());
                         gScore.put(neighbor.getNom(), tentative_gScore);
@@ -145,11 +146,27 @@ public class ICAENGraph {
             }
         }
         // Open set is empty but goal was never reached
-        return null;
+        throw new UnreachablePath();
     }
 
+    /**
+     *
+     *
+     * @param id_origen
+     * @param range
+     * @return
+     */
     public List<String> notGuaranteedMaxDistanceZones(String id_origen, int range){
-        return null;
+        List<String> notGuaranteed = new ArrayList<>();
+        for (Estacio est : estacions){
+            try{
+                optimalPath(id_origen, est.getNom(), range);
+            }
+            catch (UnreachablePath e){
+                notGuaranteed.add(est.getNom());
+            }
+        }
+        return notGuaranteed;
     }
 
     private Estacio getEstacioByString(String id){
@@ -282,9 +299,7 @@ public class ICAENGraph {
                     try {
                         graf.addEdge(est, stat, dist);
                     }
-                    catch (CannotAddElement e){
-
-                    }
+                    catch (CannotAddElement ignored){}
                 }
             }
         }
@@ -305,9 +320,7 @@ public class ICAENGraph {
                     graf.addEdge(est, minDistEst, minDist);
                 }
             }
-            catch (NotFound | CannotAddElement e){
-
-            }
+            catch (NotFound | CannotAddElement ignored){}
         }
     }
 
@@ -316,18 +329,26 @@ public class ICAENGraph {
         double min = Double.MAX_VALUE;
 
         for (String str : list){
-            if (min > map.get(str))
+            if (min > map.get(str)) {
                 min = map.get(str);
                 res = getEstacioByString(str);
+            }
         }
         return res;
     }
 
     private List<String> reconstruct_path(HashMap<String, String> cameFrom, String current){
-        List<String> total_path = new ArrayList<>(cameFrom.keySet());
-        total_path.add(current);
+        List<String> total_path = new ArrayList<>();
+
+        String key = current;
+        total_path.add(key);
+
+        while (key != null){
+            key = cameFrom.get(key);
+            if (key != null) total_path.add(key);
+        }
+
+        Collections.reverse(total_path);
         return total_path;
     }
-
-
 }

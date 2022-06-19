@@ -3,7 +3,9 @@ package Aplicacio;
 import EstructuraDeDades.Graph;
 import EstructuraDeDades.ICAENGraph;
 import Exceptions.CannotAddElement;
+import Exceptions.UnreachablePath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -38,7 +40,13 @@ public class Main {
             graph.printGraph();*/
 
             ICAENGraph graph = new ICAENGraph("icaen.json");
-            List<String> list = graph.optimalPath("Gandesa - LAFON EdRR 1", "Rubí Forma Apar. Ppal 1 - DBT EdRR 1", 12);
+            List<String> list = new ArrayList<>();
+            try {
+                list = graph.optimalPath("La Pobla de Mafumet - LAFON EdRR 1", "Aeroports de la Generalitat - SELBA EdRSR 2 La Seu", 40);
+            }
+            catch (UnreachablePath e){
+                e.printStackTrace();
+            }
 
             System.out.println(list.size());
             System.out.println(list);
